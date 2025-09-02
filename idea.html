@@ -16,10 +16,16 @@
 
     /* Pantalla negra y luz inferior */
     #blackout { position: fixed; top:0; left:0; width:100%; height:100%; background:black; display:none; z-index:10; }
-    #darkLight { position: fixed; bottom:0; left:0; width:100%; height:120px; background: radial-gradient(ellipse at center, rgba(0,0,0,0.85) 0%, transparent 80%); display:none; z-index:11; }
+    #darkLight { position: fixed; bottom:0; left:0; width:100%; height:120px; 
+      background: radial-gradient(ellipse at center, rgba(0,0,0,0.85) 0%, transparent 80%);
+      display:none; z-index:12;
+    }
 
-    #bgGif { position: fixed; top:0; left:0; width:100%; height:100%; background: url('hollow_fondo.gif') no-repeat center center; background-size: cover; z-index:5; display:none; }
-    #fog { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(200,200,255,0.08); display:none; z-index:6; pointer-events:none; }
+    #bgGif { position: fixed; top:0; left:0; width:100%; height:100%; 
+      background: url('hollow_fondo.gif') no-repeat center center; background-size: cover; 
+      z-index:5; display:none; }
+    #fog { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(200,200,255,0.08); 
+      display:none; z-index:6; pointer-events:none; }
 
     /* Cuadro central */
     #frame {
@@ -32,7 +38,7 @@
       display:none; flex-direction: column; justify-content:center; align-items:center;
       padding:20px; overflow:hidden;
       box-shadow: 0 0 60px rgba(127,225,255,0.6); /* luz celeste */
-      z-index:12;
+      z-index:13;
     }
 
     #poem {
@@ -41,27 +47,34 @@
       line-height:1.6;
       text-align:center;
       text-shadow:0 0 12px rgba(127,225,255,0.6);
-      z-index:13;
+      z-index:14;
     }
 
-    #knight { position:absolute; bottom:50px; right:-150px; width:120px; display:none; filter:drop-shadow(0 0 12px rgba(127,225,255,0.6)); z-index:14; }
+    #knight { position:absolute; bottom:50px; right:-150px; width:120px; display:none; 
+      filter:drop-shadow(0 0 12px rgba(127,225,255,0.6)); z-index:15; }
 
     @keyframes runLeft { from{right:-150px;} to{right:100%;} }
 
     /* Partículas de vacío subiendo hasta media pantalla */
-    .voidParticle { position: fixed; width:3px; height:3px; background: rgba(127,225,255,0.8); border-radius:50%; filter:drop-shadow(0 0 6px rgba(127,225,255,0.5)); opacity:0.8; animation: voidRise 5s linear forwards; z-index:15; }
+    .voidParticle { position: fixed; width:3px; height:3px; background: rgba(127,225,255,0.8); 
+      border-radius:50%; filter:drop-shadow(0 0 6px rgba(127,225,255,0.5)); 
+      opacity:0.8; animation: voidRise 5s linear forwards; z-index:16; }
     @keyframes voidRise { from{transform: translateY(0) scale(1); opacity:0.8;} to{transform: translateY(-50vh) scale(1.2); opacity:0;} }
 
     /* Lluvia */
-    .rainDrop { position: fixed; width:2px; height:15px; background: rgba(127,225,255,0.6); opacity:0.7; animation: fall linear infinite; z-index:16; }
+    .rainDrop { position: fixed; width:2px; height:15px; background: rgba(127,225,255,0.6); 
+      opacity:0.7; animation: fall linear infinite; z-index:17; }
     @keyframes fall { to { transform: translateY(110vh); opacity:0; } }
 
     /* Pétalos */
-    .petal { position: fixed; width:8px; height:8px; background: rgba(200,180,255,0.4); border-radius:50%; animation: fallPetal linear forwards; z-index:12; }
+    .petal { position: fixed; width:8px; height:8px; background: rgba(200,180,255,0.4); 
+      border-radius:50%; animation: fallPetal linear forwards; z-index:12; }
     @keyframes fallPetal { to { transform: translateY(110vh) translateX(30px); opacity:0; } }
 
     /* Hadas */
-    .fairy { position: fixed; width:5px; height:5px; background: rgba(150,200,255,0.8); border-radius:50%; filter: drop-shadow(0 0 8px rgba(150,200,255,0.6)); animation: floatFairy linear infinite; z-index:17; }
+    .fairy { position: fixed; width:5px; height:5px; background: rgba(150,200,255,0.8); 
+      border-radius:50%; filter: drop-shadow(0 0 8px rgba(150,200,255,0.6)); 
+      animation: floatFairy linear infinite; z-index:18; }
     @keyframes floatFairy { 0%{transform:translate(0,0) scale(1); opacity:1;} 50%{transform:translate(50px,-50px) scale(1.2); opacity:0.7;} 100%{transform:translate(0,0) scale(1); opacity:1;} }
   </style>
 </head>
@@ -161,7 +174,7 @@
 
       setTimeout(()=>{
         blackout.style.display='none';
-        darkLight.style.display='block'; // LUZ NEGRA visible
+        darkLight.style.display='block'; // Luz negra inferior visible
         bgGif.style.display='block';
         frame.style.display='flex';
         fog.style.display='block';
@@ -171,7 +184,7 @@
         knight.style.animation='runLeft 5s linear forwards';
 
         const voidInterval=setInterval(spawnVoidParticle,300);
-        const rainInterval=setInterval(spawnRain,100);
+        const rainInterval=setInterval(spawnRain,80);
         const petalInterval=setInterval(spawnPetal,800);
         const fairyInterval=setInterval(spawnFairy,1000);
 
@@ -184,7 +197,7 @@
         },5000);
 
         dreamers.addEventListener("ended", ()=>{
-          hollowScream.play();
+          hollowScream.play(); // Grito al final de Dreamers
         });
       },3000);
     });
