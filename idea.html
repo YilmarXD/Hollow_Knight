@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Idea Especial — Hollow Knight</title>
+  <style>
+    body {
+      margin: 0;
+      background: black;
+      overflow: hidden;
+      font-family: Inter, sans-serif;
+    }
+
+    video { position: fixed; top:0; left:0; width:100%; height:100%; object-fit: cover; z-index:1; }
+    audio { display:none; }
+
+    /* Pantalla negra y luz inferior */
+    #blackout { position: fixed; top:0; left:0; width:100%; height:100%; background:black; display:none; z-index:10; }
+    #darkLight { position: fixed; bottom:0; left:0; width:100%; height:120px; background: radial-gradient(ellipse at center, rgba(0,0,0,0.85) 0%, transparent 80%); display:none; z-index:11; }
+
+    #bgGif { position: fixed; top:0; left:0; width:100%; height:100%; background: url('hollow_fondo.gif') no-repeat center center; background-size: cover; z-index:5; display:none; }
+    #fog { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(200,200,255,0.08); display:none; z-index:6; pointer-events:none; }
+
+    /* Cuadro central */
+    #frame {
+      position: fixed;
+      top:50%; left:50%;
+      transform: translate(-50%, -50%);
+      width:800px; height:450px;
+      background: rgba(0,0,0,0.85);
+      border:4px solid #111;
+      display:none; flex-direction: column; justify-content:center; align-items:center;
+      padding:20px; overflow:hidden;
+      box-shadow: 0 0 60px rgba(127,225,255,0.6); /* luz celeste */
+      z-index:12;
+    }
+
+    #poem {
+      color:#e7f0ff;
+      font-size:1.3rem;
+      line-height:1.6;
+      text-align:center;
+      text-shadow:0 0 12px rgba(127,225,255,0.6);
+      z-index:13;
+    }
+
+    #knight { position:absolute; bottom:50px; right:-150px; width:120px; display:none; filter:drop-shadow(0 0 12px rgba(127,225,255,0.6)); z-index:14; }
+
+    @keyframes runLeft { from{right:-150px;} to{right:100%;} }
+
+    /* Partículas de vacío subiendo hasta media pantalla */
+    .voidParticle { position: fixed; width:3px; height:3px; background: rgba(127,225,255,0.8); border-radius:50%; filter:drop-shadow(0 0 6px rgba(127,225,255,0.5)); opacity:0.8; animation: voidRise 5s linear forwards; z-index:15; }
+    @keyframes voidRise { from{transform: translateY(0) scale(1); opacity:0.8;} to{transform: translateY(-50vh) scale(1.2); opacity:0;} }
+
+    /* Lluvia */
+    .rainDrop { position: fixed; width:2px; height:15px; background: rgba(127,225,255,0.6); opacity:0.7; animation: fall linear infinite; z-index:16; }
+    @keyframes fall { to { transform: translateY(110vh); opacity:0; } }
+
+    /* Pétalos */
+    .petal { position: fixed; width:8px; height:8px; background: rgba(200,180,255,0.4); border-radius:50%; animation: fallPetal linear forwards; z-index:12; }
+    @keyframes fallPetal { to { transform: translateY(110vh) translateX(30px); opacity:0; } }
+
+    /* Hadas */
+    .fairy { position: fixed; width:5px; height:5px; background: rgba(150,200,255,0.8); border-radius:50%; filter: drop-shadow(0 0 8px rgba(150,200,255,0.6)); animation: floatFairy linear infinite; z-index:17; }
+    @keyframes floatFairy { 0%{transform:translate(0,0) scale(1); opacity:1;} 50%{transform:translate(50px,-50px) scale(1.2); opacity:0.7;} 100%{transform:translate(0,0) scale(1); opacity:1;} }
+  </style>
+</head>
+<body>
+  <video id="cinematic" autoplay>
+    <source src="godmaster.mp4" type="video/mp4">
+  </video>
+
+  <audio id="videoAudio" autoplay>
+    <source src="audio_godmaster.mp3" type="audio/mp3">
+  </audio>
+  <audio id="dreamers">
+    <source src="dreamers.mp3" type="audio/mp3">
+  </audio>
+  <audio id="hollowScream">
+    <source src="grito_hollow.mp3" type="audio/mp3">
+  </audio>
+
+  <div id="blackout"></div>
+  <div id="darkLight"></div>
+  <div id="fog"></div>
+  <div id="bgGif"></div>
+
+  <div id="frame">
+    <div id="poem">
+      Del vacío mi alma salió,<br>
+      y al encontrarte un brillo sintió.<br>
+      Vulnerable al destello me volvió,<br>
+      y en Hallownest tu amor me guió.<br><br>
+      En sombras y luz, tu risa brilló,<br>
+      cada paso contigo me emocionó.<br>
+      Entre pinchos y sueños nos unió,<br>
+      Alejandra, mi corazón te eligió.<br><br>
+      Bajo la lluvia que siempre cae,<br>
+      tu nombre en mis labios nunca se deshace.<br>
+      Mi caballero y tu luz jamás se separan,<br>
+      y por siempre juntos nuestras almas caminan.
+    </div>
+    <img id="knight" src="hollow_knight.gif" alt="Caballerito corriendo">
+  </div>
+
+  <script>
+    const cinematic = document.getElementById("cinematic");
+    const videoAudio = document.getElementById("videoAudio");
+    const blackout = document.getElementById("blackout");
+    const darkLight = document.getElementById("darkLight");
+    const bgGif = document.getElementById("bgGif");
+    const frame = document.getElementById("frame");
+    const knight = document.getElementById("knight");
+    const dreamers = document.getElementById("dreamers");
+    const fog = document.getElementById("fog");
+    const hollowScream = document.getElementById("hollowScream");
+
+    function spawnVoidParticle(){
+      const p = document.createElement('div');
+      p.className='voidParticle';
+      p.style.left=Math.random()*100+'vw';
+      p.style.bottom='0';
+      const size=Math.random()*4+2;
+      p.style.width=p.style.height=size+'px';
+      document.body.appendChild(p);
+      setTimeout(()=>p.remove(),5000);
+    }
+
+    function spawnRain(){
+      const drop=document.createElement('div');
+      drop.className='rainDrop';
+      drop.style.left=Math.random()*100+'vw';
+      drop.style.animationDuration=(Math.random()*0.5+0.3)+'s';
+      drop.style.height=(Math.random()*25+15)+'px';
+      document.body.appendChild(drop);
+      setTimeout(()=>drop.remove(),1200);
+    }
+
+    function spawnPetal(){
+      const petal=document.createElement('div');
+      petal.className='petal';
+      petal.style.left=Math.random()*100+'vw';
+      petal.style.animationDuration=(Math.random()*5+5)+'s';
+      document.body.appendChild(petal);
+      setTimeout(()=>petal.remove(),10000);
+    }
+
+    function spawnFairy(){
+      const f=document.createElement('div');
+      f.className='fairy';
+      f.style.left=Math.random()*100+'vw';
+      f.style.top=Math.random()*80+'vh';
+      f.style.animationDuration=(Math.random()*5+3)+'s';
+      document.body.appendChild(f);
+      setTimeout(()=>f.remove(),8000);
+    }
+
+    cinematic.addEventListener("ended", ()=>{
+      videoAudio.pause();
+      blackout.style.display='block';
+
+      setTimeout(()=>{
+        blackout.style.display='none';
+        darkLight.style.display='block'; // LUZ NEGRA visible
+        bgGif.style.display='block';
+        frame.style.display='flex';
+        fog.style.display='block';
+
+        dreamers.play();
+        knight.style.display='block';
+        knight.style.animation='runLeft 5s linear forwards';
+
+        const voidInterval=setInterval(spawnVoidParticle,300);
+        const rainInterval=setInterval(spawnRain,100);
+        const petalInterval=setInterval(spawnPetal,800);
+        const fairyInterval=setInterval(spawnFairy,1000);
+
+        setTimeout(()=>{
+          knight.style.display='none';
+          clearInterval(voidInterval);
+          clearInterval(rainInterval);
+          clearInterval(petalInterval);
+          clearInterval(fairyInterval);
+        },5000);
+
+        dreamers.addEventListener("ended", ()=>{
+          hollowScream.play();
+        });
+      },3000);
+    });
+  </script>
+</body>
+</html>

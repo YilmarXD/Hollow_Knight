@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Alejandra — Te amo al 112%</title>
+  <meta name="description" content="Una carta web romántica inspirada en Hollow Knight: Te amo al 112%" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;600;800&family=Source+Code+Pro:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg-0:#07090c;
+      --bg-1:#0b1118;
+      --ink:#e7f0ff;
+      --muted:#9fb3c8;
+      --glow:#7fe1ff;
+      --accent:#7cd4c2;
+      --shadow:rgba(0,0,0,.45);
+      --paper:#0f1622cc;
+      --edge:#1e2a3a;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; color:var(--ink); background:var(--bg-0); font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif; overflow-x:hidden;
+    }
+    .bg-base{
+      position:fixed; inset:0; z-index:-2; pointer-events:none;
+      background:
+        radial-gradient(1200px 600px at 80% -10%, #122031 0%, transparent 60%),
+        radial-gradient(900px 500px at 10% 110%, #101b28 0%, transparent 60%),
+        linear-gradient(180deg, #0a0f15 0%, #0a0e13 60%, #07090c 100%);
+    }
+    .bg-overlay{
+      position:fixed; inset:0; z-index:-1; pointer-events:none;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.7" numOctaves="2" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="table" tableValues="0 0.035"/></feComponentTransfer></filter><rect width="300" height="300" filter="url(%23n)"/></svg>');
+      opacity:.25; mix-blend-mode:screen;
+    }
+
+    header{ position:relative; padding:2rem 1.25rem 1rem; text-align:center; }
+    .title{ font-family:Cinzel, serif; letter-spacing:.06em; font-size:clamp(1.4rem, 3vw, 2rem); font-weight:700; text-shadow:0 0 18px rgba(127,225,255,.25); }
+    .subtitle{ font-family:Source Code Pro, monospace; color:var(--muted); font-size:.95rem; margin-top:.35rem; }
+
+    .motes{ position:fixed; inset:0; pointer-events:none; z-index:0; }
+    .mote{ position:absolute; width:2px; height:2px; background:var(--glow); border-radius:50%; filter:drop-shadow(0 0 6px var(--glow)); opacity:.8; animation: rise linear infinite; transform:translateY(0); }
+    @keyframes rise{ to{ transform: translateY(-110vh) scale(1.4); opacity:0 } }
+
+    .book{
+      width:min(980px, 94vw);
+      margin:1rem auto 2rem;
+      background:var(--paper);
+      border:1px solid var(--edge);
+      box-shadow: 0 20px 60px var(--shadow), inset 0 0 0 1px rgba(255,255,255,.03);
+      border-radius:24px;
+      overflow:hidden;
+      position:relative;
+      backdrop-filter: blur(8px) saturate(120%);
+    }
+    .book-header{ display:flex; align-items:center; justify-content:space-between; gap:.75rem; padding:1rem 1.25rem; border-bottom:1px solid rgba(255,255,255,.06); background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.00)); }
+    .brand{ display:flex; align-items:center; gap:.75rem; }
+    .brand svg{ filter:drop-shadow(0 0 10px rgba(127,225,255,.35)); }
+    .brand-title{ font-family:Cinzel, serif; font-weight:600; letter-spacing:.04em }
+
+    .controls{ display:flex; align-items:center; gap:.5rem }
+    .btn{ appearance:none; border:1px solid var(--edge); background:#0b1420; color:var(--ink); padding:.6rem .9rem; border-radius:12px; cursor:pointer; font-weight:600; transition:.25s ease; box-shadow:0 6px 20px rgba(0,0,0,.35), inset 0 0 0 1px rgba(255,255,255,.03); }
+    .btn:hover{ transform:translateY(-1px); box-shadow:0 10px 28px rgba(0,0,0,.45); border-color:#2b3b53 }
+
+    .pages-viewport{ overflow:hidden; position:relative }
+    .pages{ display:flex; width:100%; transition: transform .6s cubic-bezier(.2,.8,.2,1); }
+    .page{ flex:0 0 100%; padding:clamp(16px, 2.6vw, 32px); min-height: 56vh; display:grid; align-content:start; gap:1rem; background:
+        radial-gradient(180px 80px at 10% 0%, rgba(127,225,255,.08), transparent 70%),
+        radial-gradient(220px 100px at 90% 0%, rgba(124,212,194,.07), transparent 70%);
+    }
+
+    h1, h2{ font-family:Cinzel, serif; margin:.2rem 0; }
+    h1{ font-size:clamp(1.4rem, 3.2vw, 2.1rem) }
+    h2{ font-size:clamp(1.1rem, 2.4vw, 1.5rem); color:var(--muted) }
+    p{ line-height:1.7; font-size:clamp(.95rem, 2.2vw, 1.05rem); margin:.4rem 0 }
+
+    .meter-wrap{ display:grid; grid-template-columns: 160px 1fr; gap:1rem; align-items:center }
+    .meter{ --pct:112; width:140px; height:140px; position:relative; filter: drop-shadow(0 0 10px rgba(127,225,255,.25)); }
+    .meter svg{width:100%; height:100%;}
+    .meter .label{ position:absolute; inset:0; display:grid; place-items:center; font-family:Cinzel, serif; }
+    .meter .label .big{ font-size:1.9rem; font-weight:700; text-shadow:0 0 14px rgba(127,225,255,.4) }
+    .meter .label .small{ font-size:.8rem; color:var(--muted) }
+
+    .note{ padding:1rem; border:1px dashed rgba(255,255,255,.15); border-radius:14px; background:rgba(255,255,255,.03); font-size:.95rem; color:var(--muted) }
+
+    footer{ text-align:center; padding:1.5rem; color:var(--muted); font-size:.9rem }
+
+    @media (max-width:720px){ .meter-wrap{ grid-template-columns: 1fr; } .brand-title{ display:none } }
+  </style>
+</head>
+<body>
+  <div class="bg-base"></div>
+  <div class="bg-overlay"></div>
+  <div class="motes" id="motes" aria-hidden="true"></div>
+
+  <header>
+    <div class="title">“En Hallownest y más allá...”</div>
+    <div class="subtitle">Un mensaje para Alejandra — por Yilmar</div>
+  </header>
+
+  <main class="book" role="region" aria-label="Cuaderno de amor estilo Hollow Knight">
+    <div class="book-header">
+      <div class="brand" aria-hidden="true">
+        <svg width="28" height="28" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#bfefff"/>
+              <stop offset="1" stop-color="#7cd4c2"/>
+            </linearGradient>
+          </defs>
+          <path d="M12 10 L52 10 L34 54 L30 38 L12 10 Z" fill="url(#g)" opacity="0.9"/>
+        </svg>
+        <div class="brand-title">Alejandra 112%</div>
+      </div>
+      <div class="controls">
+        <button class="btn" id="prev" aria-label="Página anterior">◀</button>
+        <button class="btn" id="next" aria-label="Página siguiente">▶</button>
+      </div>
+    </div>
+
+    <div class="pages-viewport">
+      <section class="pages" id="pages">
+        <!-- PÁGINA 1 -->
+        <article class="page" aria-label="Portada">
+          <h1>Alejandra, te amo al <span style="color:var(--glow); text-shadow:0 0 10px rgba(127,225,255,.6)">112%</span></h1>
+          <h2>Como completar el Pantheon of Hallownest… pero en versión corazón.</h2>
+          <div class="meter-wrap">
+            <div class="meter" title="112% del corazón desbloqueado">
+              <svg viewBox="0 0 120 120" aria-hidden="true">
+                <defs>
+                  <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#bfefff"/>
+                    <stop offset="100%" stop-color="#7cd4c2"/>
+                  </linearGradient>
+                </defs>
+                <circle cx="60" cy="60" r="50" stroke="rgba(255,255,255,.12)" stroke-width="12" fill="none"/>
+                <circle id="arc" cx="60" cy="60" r="50" stroke="url(#grad)" stroke-width="12" stroke-linecap="round" fill="none" stroke-dasharray="314" stroke-dashoffset="314"/>
+              </svg>
+              <div class="label">
+                <div class="big" id="pct">0%</div>
+                <div class="small">Completado</div>
+              </div>
+            </div>
+            <p>
+              No hay final secreto sin ti. Cada charla, cada risa y cada silencio contigo suman más que un 100%. Por eso hoy te dejo esto: un pequeño Hallownest personal donde el logro máximo es amarte —y ya está desbloqueado.
+            </p>
+          </div>
+          <div class="note">Tip: usa las flechas ◀ ▶ o desliza para pasar de página. Escribe <strong>112</strong> en el teclado para un secreto.</div>
+        </article>
+
+        <!-- PÁGINA 2 -->
+        <article class="page" aria-label="Promesa">
+          <h1>Mi promesa</h1>
+          <p>Te prometo ser tu compañero en cada reino, tu banco seguro cuando el mundo canse, tu linterna en los caminos oscuros y tu banca cuando quieras descansar. Si hay que repetir el camino para explorar un rincón más, lo haré feliz.</p>
+          <p>Te amo al <strong>112%</strong> hoy, mañana y en todos los finales posibles.</p>
+          <ul>
+            <li>Paciencia cuando el jefe parezca imposible.</li>
+            <li>Risas cuando nos caigamos a los pinchos.</li>
+            <li>Una mano para volver a intentarlo, las veces que haga falta.</li>
+          </ul>
+        </article>
+
+        <!-- PÁGINA 3 -->
+        <article class="page" aria-label="Para Alejandra">
+          <h1>Para Alejandra</h1>
+          <p>Gracias por ser mi amuleto favorito. Contigo todo brilla un poco más. Si alguna vez dudas, abre esta página y recuerda: ya llegamos al 112%.</p>
+          <p>— Yilmar</p>
+          <p class="note">Del vacio mi alma salio y una emocion al conocerte sintio, vulnerable al destello me volvio<code></code>.</p>
+        </article>
+
+        <!-- PÁGINA 4 -->
+        <article class="page" aria-label="Idea original">
+          <h1>Un último secreto</h1>
+          <p>Aquí termina este cuaderno, pero no la historia.  
+          Toca el botón para descubrir mi idea original para ti, Alejandra ✨</p>
+          <button class="btn" id="open-idea">Abrir regalo original 💖</button>
+          <p class="note">Se abrirá en una nueva pestaña<code>.</code></p>
+        </article>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    Hecho con ♥ en nuestro pequeño Hallownest.
+  </footer>
+
+  <script>
+    /* ==========================
+       PERSONALIZA AQUÍ
+       ========================== */
+    const YOUR_LOVE_PERCENT = 112; // ¡puedes poner 112 o más ;)
+    const PARTICLE_COUNT = 60;
+    const PARTICLE_MIN_SEC = 8;   // tiempo para subir
+    const PARTICLE_MAX_SEC = 18;
+    const USE_IMAGE_PARTICLES = false; // cambia a true para usar imagen
+    const IMAGE_PARTICLE_URL = 'petalo1.png';
+    /* ========================== */
+
+    // Flipbook
+    const pages = document.getElementById('pages');
+    const pageCount = pages.children.length;
+    let index = 0;
+
+    function go(i){
+      index = (i + pageCount) % pageCount;
+      pages.style.transform = `translateX(-${index*100}%)`;
+    }
+    document.getElementById('prev').addEventListener('click', ()=> go(index-1));
+    document.getElementById('next').addEventListener('click', ()=> go(index+1));
+
+    // Botón de la página 4: abre idea.html en nueva pestaña
+    document.getElementById('open-idea').addEventListener('click', ()=>{
+      window.open('idea.html', '_blank');
+    });
+
+    // Deslizar en móvil
+    let startX=null;
+    pages.addEventListener('touchstart', e=> startX = e.touches[0].clientX, {passive:true});
+    pages.addEventListener('touchend', e=>{
+      if(startX===null) return; const dx = e.changedTouches[0].clientX - startX; startX = null;
+      if(Math.abs(dx) > 40) go(index + (dx<0 ? 1 : -1));
+    }, {passive:true});
+
+    // Medidor 112%
+    const arc = document.getElementById('arc');
+    const pctEl = document.getElementById('pct');
+    const CIRC = 2*Math.PI*50; // ~314
+    const target = Math.max(0, YOUR_LOVE_PERCENT);
+
+    let t0 = null;
+    function animate(ts){
+      if(!t0) t0 = ts; const p = Math.min(1, (ts - t0)/1600);
+      const value = Math.floor(p * target);
+      pctEl.textContent = value + '%';
+      const dash = CIRC * (1 - Math.min(value, 112)/112); // tope visual en 112%
+      arc.style.strokeDashoffset = dash.toFixed(1);
+      if(p<1) requestAnimationFrame(animate);
+    }
+    arc.style.strokeDasharray = CIRC;
+    arc.style.strokeDashoffset = CIRC;
+    requestAnimationFrame(animate);
+
+    // Partículas
+    const motes = document.getElementById('motes');
+    const rnd = (a,b)=> a + Math.random()*(b-a);
+
+    function spawn(){
+      const el = document.createElement('div');
+      el.className = 'mote';
+      const left = rnd(-5, 105);
+      const delay = rnd(0, 8);
+      const dur = rnd(PARTICLE_MIN_SEC, PARTICLE_MAX_SEC);
+
+      if(USE_IMAGE_PARTICLES){
+        el.style.width = el.style.height = rnd(10,18) + 'px';
+        el.style.background = `url(${IMAGE_PARTICLE_URL}) center/contain no-repeat`;
+        el.style.filter = 'drop-shadow(0 0 8px rgba(127,225,255,.25))';
+        el.style.opacity = .85;
+      } else {
+        el.style.width = el.style.height = rnd(1.5,3) + 'px';
+        el.style.background = 'var(--glow)';
+        el.style.borderRadius = '50%';
+        el.style.filter = 'drop-shadow(0 0 6px var(--glow))';
+        el.style.opacity = .9;
+      }
+
+      el.style.left = left + 'vw';
+      el.style.bottom = '-10vh';
+      el.style.animationDuration = dur + 's';
+      el.style.animationDelay = delay + 's';
+
+      motes.appendChild(el);
+      // limpiar después de que termine su animación
+      setTimeout(()=> el.remove(), (delay+dur+1)*1000);
+    }
+
+    for(let i=0;i<PARTICLE_COUNT;i++) spawn();
+    setInterval(()=> spawn(), 800);
+
+    // Secreto: escribir 1 1 2 para un brillo + mensaje
+    const secret = ['1','1','2'];
+    let typed = [];
+    window.addEventListener('keydown', e=>{
+      // evitamos que la tecla de function o control afecte
+      if(e.key.length !== 1) return;
+      typed.push(e.key);
+      if(typed.length>secret.length) typed.shift();
+      if(secret.every((v,i)=> v===typed[i])){
+        typed = [];
+        glow();
+      }
+    });
+
+    function glow(){
+      // Efecto breve de brillo
+      document.body.style.transition = 'filter .6s ease';
+      document.body.style.filter = 'brightness(1.18) saturate(1.18)';
+
+      const msg = document.createElement('div');
+      msg.textContent = 'Logro oculto: Amor 112% desbloqueado ✨';
+      msg.style.position='fixed'; msg.style.top='14px'; msg.style.left='50%'; msg.style.transform='translateX(-50%)';
+      msg.style.padding='10px 16px'; msg.style.background='linear-gradient(180deg, rgba(15,22,34,.95), rgba(11,18,28,.85))';
+      msg.style.border='1px solid var(--edge)'; msg.style.borderRadius='12px';
+      msg.style.boxShadow='0 10px 30px rgba(0,0,0,.5)'; msg.style.fontWeight='700'; msg.style.zIndex='9999';
+      msg.style.color='var(--ink)';
+
+      document.body.appendChild(msg);
+      setTimeout(()=>{
+        document.body.style.filter='';
+        msg.remove();
+      }, 2200);
+    }
+
+    // Evitar que el botón prev/next pierda foco por accesibilidad con teclado
+    document.addEventListener('keydown', (e)=>{
+      if(e.key === 'ArrowRight') go(index+1);
+      if(e.key === 'ArrowLeft') go(index-1);
+    });
+  </script>
+</body>
+</html>
